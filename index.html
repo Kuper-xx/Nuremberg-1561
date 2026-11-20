@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1317">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>NÚREMBERG 1561 — Anomalía</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="game">
+    <canvas id="view" aria-label="Vista de la cabina de combate"></canvas>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+    <div class="letterbox top"></div>
+    <div class="letterbox bottom"></div>
+    <div id="cinema-fade" aria-hidden="true"></div>
+    <div class="hud" id="hud" hidden>
+      <div class="hud-top">
+        <div class="hud-card"><span class="eyebrow">OPERACIÓN</span><strong>CIELO DE HIERRO</strong></div>
+        <div class="mission"><span class="dot"></span> INTERCEPTACIÓN DE LARGO ALCANCE <span class="sep">·</span> <span id="radar-status">RADAR ACTIVO</span></div>
+        <div class="hud-card right"><span class="eyebrow">NÚREMBERG · 14 ABR 1561</span><strong id="clock">06:12:00</strong></div>
+      </div>
+      <div class="side left">
+        <span class="eyebrow">INTEGRIDAD</span>
+        <strong id="health">100<span>%</span></strong>
+        <div class="bar"><i id="healthbar"></i></div>
+        <small>F-35A · ARG-061</small>
+      </div>
+      <div class="side right-side">
+        <span class="eyebrow">CAÑÓN GAU-22/A</span>
+        <strong id="ammo">40<span> / 40</span></strong>
+        <div class="bar"><i id="ammobar"></i></div>
+        <small id="weapon-status">SISTEMA LISTO</small>
+        <div class="ordnance-row">
+          <span class="ord-chip" id="missile-chip">AIM-9X <b id="missiles">6</b></span>
+          <span class="ord-chip" id="flare-chip">FLR <b id="flares">12</b></span>
+        </div>
+      </div>
+      <div class="crosshair" id="crosshair"><i></i><b></b><em></em><span class="ring-outer"></span></div>
+      <div id="hitmarker">×</div>
+      <div id="damage"></div>
+      <div id="radio-feed" hidden><span class="radio-callsign" id="radio-callsign">ARG-062 // VHF</span><span id="radio-text"></span></div>
+      <div class="hud-bottom">
+        <div class="hud-card"><span class="eyebrow">BLANCOS NEUTRALIZADOS</span><strong id="kills">00 <span>/ 12</span></strong></div>
+        <div class="bottom-center">
+          <span id="message">IDENTIFICÁ Y DESTRUÍ LOS OBJETOS</span>
+          <small>W/S VELOCIDAD &nbsp; · &nbsp; A/D MANIOBRAR &nbsp; · &nbsp; SHIFT POSTCOMBUSTIÓN &nbsp; · &nbsp; CLIC DER / E MISIL &nbsp; · &nbsp; F BENGALAS &nbsp; · &nbsp; R RECARGAR</small>
+        </div>
+        <div class="hud-card right"><span class="eyebrow">VELOCIDAD</span><strong id="speed">350 <span>KT</span></strong></div>
+      </div>
+    </div>
+    <section class="overlay" id="intro">
+      <div class="intro-bg" aria-hidden="true"></div>
+      <div class="intro-flare" aria-hidden="true"></div>
+      <div class="intro-top">
+        <div class="brand"><span class="brand-mark">✦</span> ARCHIVO <b> / </b> 1561</div>
+        <span class="top-label">EDICIÓN CINEMATOGRÁFICA · INTERCEPTACIÓN AÉREA</span>
+      </div>
+      <div class="intro-content">
+        <div class="kicker"><span></span> 14 DE ABRIL, 1561 &nbsp; / &nbsp; 06:12 HRS · SECTOR FRANCONIA</div>
+        <h1>NÚREMBERG<span>1561</span></h1>
+        <p class="lead">El cielo se abrió antes del amanecer.</p>
+        <p class="description">Una anomalía temporal te dejó sobre la ciudad imperial. Esferas metálicas, cilindros nodriza y cruces de fuego emergen a gran distancia sobre las nubes. Encendé la postcombustión, fijá los blancos en el horizonte y defendé el cielo.</p>
+        <div class="brief">
+          <div><span>01 / MISIÓN</span><strong>Interceptar 12 anomalías</strong></div>
+          <div><span>02 / AERONAVE</span><strong>F-35A · ARG-061</strong></div>
+          <div><span>03 / ARMAMENTO</span><strong>GAU-22/A · 6× AIM-9X · FLR</strong></div>
+        </div>
+        <label style="display:block;margin-bottom:12px;font-size:13px">CALIDAD GRÁFICA <select id="graphics-quality" style="background:#172323;color:#eee;padding:6px;border:1px solid #68756b"><option value="auto">Automática · hasta 1080p</option><option value="high">Alta · nubes más detalladas</option><option value="medium">Media · resolución reducida</option><option value="low">Baja · sin sombras dinámicas</option></select></label>
+        <button id="start">INICIAR MISIÓN <span>↗</span></button>
+        <p class="controls">RATÓN para dirigir y apuntar &nbsp; · &nbsp; CLIC IZQ cañón &nbsp; · &nbsp; CLIC DER / E misil AIM-9X &nbsp; · &nbsp; F bengalas<br>W/S velocidad &nbsp; · &nbsp; A/D maniobrar &nbsp; · &nbsp; SHIFT postcombustión &nbsp; · &nbsp; R recargar &nbsp; · &nbsp; M sonido</p>
+      </div>
+      <div class="intro-footer">
+        <span>FICCIÓN INSPIRADA EN LA LÁMINA DE HANS GLASER (1561)</span>
+      </div>
+    </section>
+    <section class="overlay end" id="end" hidden>
+      <div class="intro-bg end-bg" aria-hidden="true"></div>
+      <div class="end-box">
+        <div class="kicker"><span></span> FIN DE LA OPERACIÓN</div>
+        <h2 id="end-title"></h2>
+        <p id="end-text"></p>
+        <div class="result"><span>BLANCOS NEUTRALIZADOS</span><strong id="end-score"></strong></div>
+        <button id="restart">VOLVER A VOLAR <span>↗</span></button>
+      </div>
+    </section>
+    <div id="pause-hint" hidden>CURSOR LIBERADO · HACÉ CLIC EN LA PANTALLA PARA CONTINUAR</div>
+  </main>
+  <script src="audio.js"></script>
+  <script src="textures.js"></script>
+  <script src="vendor/three.min.js"></script>
+  <script src="assets/city-atlas.js"></script>
+  <script src="assets/franconia-sky.js"></script>
+  <script src="assets/franconia-relief.js"></script>
+  <script src="assets/franconia-fields.js"></script>
+  <script src="assets/franconian-fronts.js"></script>
+  <script src="atmosphere3d.js"></script>
+  <script src="postfx.js"></script>
+  <script src="models3d.js"></script>
+  <script src="city3d.js"></script>
+  <script src="vfx3d.js"></script>
+  <script src="cockpit3d.js"></script>
+  <script src="assets/woodland-crowns.js"></script>
+  <script src="woodland3d.js"></script>
+  <script src="world3d.js"></script>
+  <script src="renderer.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

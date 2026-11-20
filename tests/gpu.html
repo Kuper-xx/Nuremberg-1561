@@ -1,0 +1,25 @@
+<!doctype html><meta charset="utf-8"><base href="../"><style>body{margin:0}#game{position:absolute;inset:0}#report{position:fixed;top:10px;left:10px;z-index:5;background:#111;color:white;padding:12px;font:16px monospace}</style><div id="game"><canvas id="view"></canvas></div><pre id="report">Prueba GPU en curso</pre><script src="vendor/three.min.js"></script><script src="assets/city-atlas.js"></script><script src="assets/franconia-sky.js"></script><script src="assets/franconia-relief.js"></script><script src="assets/franconia-fields.js"></script><script src="assets/franconian-fronts.js"></script><script src="atmosphere3d.js"></script><script src="postfx.js"></script><script src="models3d.js"></script><script src="city3d.js"></script><script src="vfx3d.js"></script><script src="cockpit3d.js"></script><script src="assets/woodland-crowns.js"></script><script src="woodland3d.js"></script><script src="world3d.js"></script><script>
+let count=0,last=0,samples=[]; World3D.setQuality(new URLSearchParams(location.search).get("quality") || "auto");
+const s={
+  w:innerWidth,h:innerHeight,focal:innerHeight * 0.90,time:0,state:'playing',boost:0.4,muzzleFlash:0,damageFlash:0,
+  player:{x:0,y:340,z:0,yaw:0,pitch:-.1,roll:0,speed:260,health:100,gForce:1.2,aoa:0,slip:0,recoil:0},
+  wingman:{x:180,y:310,z:520,bank:0.12},
+  wingmanTrail:[{x:165,y:305,z:380},{x:172,y:307,z:450},{x:180,y:310,z:520}],
+  enemies:[
+    {type:'fighter',x:-140,y:420,z:1100,vx:65,vy:5,vz:160,hp:30,maxHp:60,size:68,bank:0.2},
+    {type:'sphere',x:220,y:490,z:1500,vx:-25,vy:0,vz:40,hp:100,maxHp:100,size:82,variant:1,ringPhase:0}
+  ],
+  playerShots:[{x:0,y:338,z:120,vx:0,vy:-12,vz:3200}],
+  shots:[{x:-120,y:410,z:960,vx:10,vy:-8,vz:-520}],
+  explosions:[{x:90,y:360,z:1250,age:0.2,maxAge:3.0,radius:140,flareTilt:0.06,lobes:[{ang:0.3,dist:1.0,size:0.65,delay:0}],secondaries:[]}],
+  particles:[{kind:'spark',x:95,y:365,z:1255,px:86,py:358,pz:1244,vx:160,vy:60,vz:120,life:0.8,max:1.35,size:8}],
+  wrecks:[],
+  clouds:[{x:0,y:520,z:1400,variant:0,puffs:[{ox:0,oy:0,oz:0,rx:180,ry:60}]}]
+};
+function gpuName() {
+  const gl = document.getElementById('world3d')?.getContext('webgl2');
+  const info = gl?.getExtension('WEBGL_debug_renderer_info');
+  return info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : null;
+}
+function frame(t){if(last&&count>30)samples.push(t-last);last=t;s.time=count*.016;s.player.z+=1.2;s.player.yaw=Math.sin(count*.003)*.15;s.enemies[1].ringPhase+=.03;s.explosions[0].age=(count*.016)%2.6;const ok=World3D.render(s);count++;if(count<330)requestAnimationFrame(frame);else{samples.sort((a,b)=>a-b);document.getElementById('report').textContent=JSON.stringify({ok,frames:count,gpu:gpuName(),medianMs:samples[Math.floor(samples.length/2)],p95Ms:samples[Math.floor(samples.length*.95)],...window.renderStats},null,2);}}requestAnimationFrame(frame);
+</script>

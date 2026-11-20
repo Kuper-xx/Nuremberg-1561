@@ -1,0 +1,16 @@
+# Local notes & stray screenshots (kept local, never pushed to GitHub)
+CONTINUAR.md
+_.png
+
+# Secrets & environment variables
+.env
+.env.*
+
+# Editor, OS & tooling artifacts
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+node_modules/
